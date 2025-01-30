@@ -1,5 +1,5 @@
 import { Card } from "./card";
-import { black, lightGray, titleFont, basicFont, darkGray } from "./globals";
+import { black, lightGray, titleFont, basicFont, darkGray, getValidInt } from "./globals";
 
 const { widget } = figma;
 const { AutoLayout, Text, Input, useSyncedState } = widget;
@@ -68,10 +68,9 @@ export function Pips() {
         <Input
           value={pips.toString()}
           onTextEditEnd={(e) => {
-            let num = parseInt(e.characters) || undefined;
-            if (!num) return;
-            num = num > 250 ? 250 : num;
-            setPips(Math.max(num, 0));
+            const num = getValidInt(e.characters);
+            if (num < 0) return;
+            setPips(num);
           }}
           fontSize={fontSize}
           fontFamily={basicFont}

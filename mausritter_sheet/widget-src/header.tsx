@@ -15,6 +15,8 @@ export function Description() {
         fontSize={24}
         fontFamily={basicFont}
         fill={darkGray}
+        verticalAlignText="center"
+        height='fill-parent'
       >
         {title}
       </Text>
@@ -25,7 +27,9 @@ export function Description() {
         value={text}
         fontSize={28}
         fontFamily={basicFont}
+        verticalAlignText="center"
         width='fill-parent'
+        height='hug-contents'
       ></Input>
     </AutoLayout>
   );

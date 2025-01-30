@@ -28,6 +28,10 @@
   var lightGray = "#e6e6e6";
   var maroon = "#600010";
   var green = "#105010";
+  function getValidInt(value) {
+    const num = parseInt(value);
+    return isNaN(num) ? -1 : num;
+  }
 
   // widget-src/header.tsx
   var { widget } = figma;
@@ -38,7 +42,9 @@
       {
         fontSize: 24,
         fontFamily: basicFont,
-        fill: darkGray
+        fill: darkGray,
+        verticalAlignText: "center",
+        height: "fill-parent"
       },
       title
     ), /* @__PURE__ */ figma.widget.h(
@@ -50,7 +56,9 @@
         value: text,
         fontSize: 28,
         fontFamily: basicFont,
-        width: "fill-parent"
+        verticalAlignText: "center",
+        width: "fill-parent",
+        height: "hug-contents"
       }
     ));
     const [sign, setSign] = useSyncedState("sign", "");
@@ -271,10 +279,9 @@
           {
             value: pips.toString(),
             onTextEditEnd: (e) => {
-              let num = parseInt(e.characters) || void 0;
-              if (!num) return;
-              num = num > 250 ? 250 : num;
-              setPips(Math.max(num, 0));
+              const num = getValidInt(e.characters);
+              if (num < 0) return;
+              setPips(num);
             },
             fontSize,
             fontFamily: basicFont,
@@ -434,9 +441,9 @@
           {
             value: max.toString(),
             onTextEditEnd: (e) => {
-              const num = parseInt(e.characters) || void 0;
-              if (!num) return;
-              setMax(Math.max(0, num));
+              const num = getValidInt(e.characters);
+              if (num < 0) return;
+              setMax(num);
             },
             fontSize: 48,
             fontFamily: basicFont,
@@ -469,8 +476,8 @@
           {
             value: current.toString(),
             onTextEditEnd: (e) => {
-              let num = parseInt(e.characters) || 0;
-              num = num >= 0 ? num : 0;
+              let num = getValidInt(e.characters);
+              if (num < 0) return;
               setCurrent(Math.min(num, max));
             },
             fontSize: 48,
@@ -532,8 +539,22 @@
 
   // widget-src/footer.tsx
   var { widget: widget5 } = figma;
-  var { AutoLayout: AutoLayout5, Text: Text5, useSyncedState: useSyncedState4 } = widget5;
+  var { AutoLayout: AutoLayout5, Text: Text5, Input: Input4, useSyncedState: useSyncedState4, useEffect } = widget5;
+  function getLevel(xp) {
+    if (xp < 1e3) {
+      return 1;
+    } else if (xp < 3e3) {
+      return 2;
+    } else if (xp < 6e3) {
+      return 3;
+    } else if (xp < 11e3) {
+      return 4;
+    } else {
+      return Math.floor((xp - 11e3) / 5e3) + 5;
+    }
+  }
   function Level() {
+    const [xp, setXp] = useSyncedState4("xp", 0);
     const [level, setLevel] = useSyncedState4("level", 1);
     return /* @__PURE__ */ figma.widget.h(
       AutoLayout5,
@@ -542,7 +563,7 @@
         height: 200,
         cornerRadius: 12,
         stroke: black,
-        strokeWidth: 2,
+        strokeWidth: 3,
         direction: "vertical",
         horizontalAlignItems: "center"
       },
@@ -593,44 +614,151 @@
         {
           direction: "horizontal",
           width: "fill-parent",
-          height: "hug-contents",
-          verticalAlignItems: "center",
-          horizontalAlignItems: "center"
-        }
+          height: "fill-parent",
+          verticalAlignItems: "end",
+          padding: 12,
+          spacing: 10
+        },
+        /* @__PURE__ */ figma.widget.h(
+          Text5,
+          {
+            fontSize: 25,
+            fontFamily: basicFont,
+            fill: darkGray,
+            width: "hug-contents"
+          },
+          "XP"
+        ),
+        /* @__PURE__ */ figma.widget.h(
+          Input4,
+          {
+            value: xp.toString(),
+            onTextEditEnd: (e) => {
+              const num = getValidInt(e.characters);
+              if (num < 0) return;
+              setXp(num);
+              setLevel(getLevel(num));
+            },
+            fontSize: 25,
+            fontFamily: basicFont,
+            fill: black,
+            width: "fill-parent"
+          }
+        )
       )
     );
   }
+  function getGrit(level) {
+    if (level < 2) {
+      return 0;
+    } else if (level < 3) {
+      return 1;
+    } else if (level < 5) {
+      return 2;
+    } else {
+      return 3;
+    }
+  }
   function Grit() {
+    const [level] = useSyncedState4("level", 0);
+    const grit = getGrit(level);
     return /* @__PURE__ */ figma.widget.h(
       AutoLayout5,
       {
         width: "fill-parent",
         height: "hug-contents",
         minHeight: 200,
-        verticalAlignItems: "center",
-        horizontalAlignItems: "center",
+        verticalAlignItems: "start",
         cornerRadius: 12,
         stroke: black,
-        strokeWidth: 2
+        strokeWidth: 3,
+        direction: "vertical"
       },
-      /* @__PURE__ */ figma.widget.h(Text5, { fontFamily: basicFont, fontSize: 24, fill: black }, "Grit")
+      /* @__PURE__ */ figma.widget.h(
+        AutoLayout5,
+        {
+          direction: "horizontal",
+          width: 150,
+          height: 50,
+          verticalAlignItems: "center",
+          horizontalAlignItems: "center",
+          strokeWidth: 2,
+          cornerRadius: 12,
+          stroke: black
+        },
+        /* @__PURE__ */ figma.widget.h(
+          AutoLayout5,
+          {
+            direction: "horizontal",
+            verticalAlignItems: "center",
+            horizontalAlignItems: "center",
+            fill: lightGray,
+            width: "fill-parent"
+          },
+          /* @__PURE__ */ figma.widget.h(
+            Text5,
+            {
+              fontSize: 35,
+              fontFamily: titleFont,
+              fill: black
+            },
+            "Grit"
+          )
+        ),
+        /* @__PURE__ */ figma.widget.h(
+          Text5,
+          {
+            fontSize: 35,
+            fontFamily: titleFont,
+            fill: black,
+            width: "fill-parent",
+            horizontalAlignText: "center"
+          },
+          grit
+        )
+      )
     );
   }
   function BankedItems() {
+    const [items, setItems] = useSyncedState4("items", "");
     return /* @__PURE__ */ figma.widget.h(
       AutoLayout5,
       {
         width: "fill-parent",
         height: "hug-contents",
+        padding: 12,
         minHeight: 200,
-        verticalAlignItems: "center",
-        horizontalAlignItems: "center",
         cornerRadius: 12,
-        stroke: lightGray,
+        stroke: darkGray,
         strokeWidth: 2,
-        strokeDashPattern: [4, 2]
+        direction: "vertical",
+        spacing: { vertical: 5 }
       },
-      /* @__PURE__ */ figma.widget.h(Text5, { fontFamily: basicFont, fontSize: 24, fill: black }, "Banked Items")
+      /* @__PURE__ */ figma.widget.h(
+        Text5,
+        {
+          fontFamily: basicFont,
+          fontSize: 25,
+          fill: black,
+          fontWeight: "bold"
+        },
+        "Banked items and pips"
+      ),
+      /* @__PURE__ */ figma.widget.h(
+        Input4,
+        {
+          fontFamily: basicFont,
+          fontSize: 32,
+          fill: black,
+          width: "fill-parent",
+          inputBehavior: "multiline",
+          value: items,
+          onTextEditEnd: (e) => {
+            setItems(e.characters);
+          },
+          placeholder: "Enter banked items and pips here"
+        }
+      )
     );
   }
   function Footer() {
@@ -651,16 +779,16 @@
 
   // widget-src/code.tsx
   var { widget: widget6 } = figma;
-  var { AutoLayout: AutoLayout6 } = widget6;
+  var { AutoLayout: AutoLayout6, Image } = widget6;
   function Widget() {
     return /* @__PURE__ */ figma.widget.h(
       AutoLayout6,
       {
         direction: "vertical",
-        fill: "#aaa",
         padding: 35,
         spacing: 25,
         width: "hug-contents",
+        fill: "#fff",
         stroke: black
       },
       /* @__PURE__ */ figma.widget.h(AutoLayout6, { spacing: 10 }, /* @__PURE__ */ figma.widget.h(NameHeader, null), /* @__PURE__ */ figma.widget.h(Description, null)),

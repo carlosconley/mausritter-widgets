@@ -1,4 +1,4 @@
-import { basicFont, black, darkGray, green, lightGray, maroon, titleFont } from "./globals";
+import { basicFont, black,  getValidInt, green, lightGray, maroon, titleFont } from "./globals";
 
 const { widget } = figma;
 const { useSyncedState, Input, AutoLayout, Text, Line, Ellipse } =
@@ -52,9 +52,9 @@ export function StatRow({ title }: { title: string }) {
         <Input
           value={max.toString()}
           onTextEditEnd={(e) => {
-            const num = parseInt(e.characters) || undefined;
-            if (!num) return;
-            setMax(Math.max(0, num));
+            const num = getValidInt(e.characters);
+            if (num < 0) return;
+            setMax(num);
           }}
           fontSize={48}
           fontFamily={basicFont}
@@ -78,8 +78,8 @@ strokeWidth={3}
         <Input
           value={current.toString()}
           onTextEditEnd={(e) => {
-            let num = parseInt(e.characters) || 0;
-            num = num >= 0 ? num : 0;
+            const num = getValidInt(e.characters);
+            if (num < 0) return;
             setCurrent(Math.min(num, max));
           }}
           fontSize={48}
@@ -99,8 +99,6 @@ strokeWidth={3}
     </AutoLayout>
   );
 }
-
-// add pips here
 
 export function Stats() {
   return (
