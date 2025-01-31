@@ -15,6 +15,7 @@ export function StatRow({ title }: { title: string }) {
   const [max, setMax] = useSyncedState(`${title}-max`, 0);
   const [current, setCurrent] = useSyncedState(`${title}-cur`, 0);
   const size = 36;
+  const shouldRenderButtons = false;
 
   return (
     <AutoLayout
@@ -76,12 +77,12 @@ export function StatRow({ title }: { title: string }) {
           length={55}
           rotation={90}
         />
-        <Ellipse
+        {shouldRenderButtons && <Ellipse
           onClick={() => setCurrent(Math.min(current + 1, max))}
           fill={green}
           width={size}
           height={size}
-        />
+        />}
         <Input
           value={current.toString()}
           onTextEditEnd={(e) => {
@@ -96,12 +97,12 @@ export function StatRow({ title }: { title: string }) {
           horizontalAlignText="center"
           inputBehavior="wrap"
         />
-        <Ellipse
+        {shouldRenderButtons && <Ellipse
           onClick={() => setCurrent(Math.max(current - 1, 0))}
           fill={maroon}
           width={size}
           height={size}
-        />
+        />}
       </AutoLayout>
     </AutoLayout>
   );

@@ -1,4 +1,4 @@
-import { basicFont, black, darkGray, lightGray } from "../helpers/globals";
+import { basicFont, black, darkGray } from "../helpers/globals";
 import { getImageFromConnections } from "../helpers/images";
 
 const { widget } = figma;
@@ -7,13 +7,12 @@ const { Frame, Text, useSyncedState, useWidgetNodeId } = widget;
 function PlayerImage() {
   const [image, setImage] = useSyncedState("image", "");
   const widgetId = useWidgetNodeId();
-
   return (
     <Frame
       width={500}
       height="fill-parent"
       cornerRadius={12}
-      fill={image ? { src: image, type: "image", scaleMode: "fit" } : "#fff"}
+      fill={image ? { src: image, type: "image", scaleMode: "fit", imageSize: { height: 200, width: 200 } } : "#fff"}
       stroke={image ? black : darkGray}
       strokeWidth={3}
       onClick={async () => {

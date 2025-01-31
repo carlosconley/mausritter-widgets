@@ -1,5 +1,20 @@
 const base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/" as const;
 
+const resizeTo = 350
+async function getOptimizedImageFromNode(node: BaseNode) {
+  if ('resize' in node) {
+    const copy = node.clone();
+    const { width, height } = node;
+    copy.resize(resizeTo, (resizeTo / width) * height);
+    const bytes = await copy.exportAsync({ format: 'PNG' });
+    copy.remove();
+    return bytes;
+  } else if ('exportAsync' in node) {
+    return await node.exportAsync({ format: 'PNG' });
+  }
+  return undefined;
+}
+
 export async function getImageFromConnections(nodeId: string) {
   const node = await figma.getNodeByIdAsync(nodeId);
   if (!node || node.type !== "WIDGET") {
@@ -20,20 +35,14 @@ export async function getImageFromConnections(nodeId: string) {
     if (!targetId) continue;
     const endpointNode = await figma.getNodeByIdAsync(targetId);
     if (
-      endpointNode &&
-      "fills" in endpointNode &&
-      Array.isArray(endpointNode.fills)
+      endpointNode
     ) {
-      for (const fill of endpointNode.fills as Paint[]) {
-        if (fill.type === "IMAGE" && fill.imageHash) {
-          const image = figma.getImageByHash(fill.imageHash);
-          const bytes = await image?.getBytesAsync();
-          return bytes ? bytesToImage64(bytes) : undefined;
-        }
-      }
+      const bytes = await getOptimizedImageFromNode(endpointNode)
+      return bytes ? bytesToImage64(bytes) : undefined;
     }
   }
 }
+
 
 function bytesToImage64(bytes: Uint8Array) {
   let image = 'data:image/png;base64,';
