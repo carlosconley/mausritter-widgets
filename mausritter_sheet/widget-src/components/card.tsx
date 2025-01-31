@@ -1,4 +1,4 @@
-import { darkGray, lightGray, titleFont } from "./globals";
+import { darkGray, lightGray, titleFont } from "../helpers/globals";
 
 const { widget } = figma;
 const { AutoLayout, Text } = widget;

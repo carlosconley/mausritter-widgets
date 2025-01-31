@@ -1,4 +1,4 @@
-import { basicFont, black, darkGray, titleFont } from "./globals";
+import { basicFont, black, darkGray, titleFont } from "../helpers/globals";
 
 const { widget } = figma;
 

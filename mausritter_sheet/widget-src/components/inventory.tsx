@@ -1,5 +1,5 @@
 import { Card } from "./card";
-import { black, lightGray, titleFont, basicFont, darkGray, getValidInt } from "./globals";
+import { black, lightGray, titleFont, basicFont, darkGray, getValidInt } from "../helpers/globals";
 
 const { widget } = figma;
 const { AutoLayout, Text, Input, useSyncedState } = widget;

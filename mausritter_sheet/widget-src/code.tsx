@@ -1,8 +1,9 @@
-import { black, } from "./globals";
-import { Description, NameHeader } from "./header";
-import { Inventory } from "./inventory";
-import { Stats } from "./stats";
-import { Footer } from "./footer";
+import { black } from "./helpers/globals";
+import { Description, NameHeader } from "./components/header";
+import { Inventory } from "./components/inventory";
+import { Stats } from "./components/stats";
+import { Footer } from "./components/footer";
+import PlayerImage from "./components/player_image";
 
 const { widget } = figma;
 const { AutoLayout } = widget;
@@ -26,7 +27,9 @@ function Widget() {
         horizontalAlignItems="end"
         width="fill-parent"
         padding={{ vertical: 0 }}
+        spacing='auto'
       >
+        <PlayerImage/>
         <Stats />
       </AutoLayout>
       <Inventory/>

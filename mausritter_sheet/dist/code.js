@@ -19,8 +19,28 @@
     return a;
   };
   var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+  var __async = (__this, __arguments, generator) => {
+    return new Promise((resolve, reject) => {
+      var fulfilled = (value) => {
+        try {
+          step(generator.next(value));
+        } catch (e) {
+          reject(e);
+        }
+      };
+      var rejected = (value) => {
+        try {
+          step(generator.throw(value));
+        } catch (e) {
+          reject(e);
+        }
+      };
+      var step = (x) => x.done ? resolve(x.value) : Promise.resolve(x.value).then(fulfilled, rejected);
+      step((generator = generator.apply(__this, __arguments)).next());
+    });
+  };
 
-  // widget-src/globals.ts
+  // widget-src/helpers/globals.ts
   var titleFont = "Pirata One";
   var basicFont = "Barlow Condensed";
   var black = "#000000";
@@ -33,7 +53,7 @@
     return isNaN(num) ? -1 : num;
   }
 
-  // widget-src/header.tsx
+  // widget-src/components/header.tsx
   var { widget } = figma;
   var { useSyncedState, Input, AutoLayout, Text, Line } = widget;
   function Description() {
@@ -170,7 +190,7 @@
     );
   }
 
-  // widget-src/card.tsx
+  // widget-src/components/card.tsx
   var { widget: widget2 } = figma;
   var { AutoLayout: AutoLayout2, Text: Text2 } = widget2;
   function Card({ label }) {
@@ -203,7 +223,7 @@
     return /* @__PURE__ */ figma.widget.h(AutoLayout2, __spreadProps(__spreadValues({}, sharedCardProps), { padding: { vertical: 15 } }), /* @__PURE__ */ figma.widget.h(Text2, __spreadValues({ fontSize: 38 }, sharedTextProps), label));
   }
 
-  // widget-src/inventory.tsx
+  // widget-src/components/inventory.tsx
   var { widget: widget3 } = figma;
   var { AutoLayout: AutoLayout3, Text: Text3, Input: Input2, useSyncedState: useSyncedState2 } = widget3;
   function Header() {
@@ -382,7 +402,7 @@
     );
   }
 
-  // widget-src/stats.tsx
+  // widget-src/components/stats.tsx
   var { widget: widget4 } = figma;
   var { useSyncedState: useSyncedState3, Input: Input3, AutoLayout: AutoLayout4, Text: Text4, Line: Line2, Ellipse } = widget4;
   function StatRow({ title }) {
@@ -476,7 +496,7 @@
           {
             value: current.toString(),
             onTextEditEnd: (e) => {
-              let num = getValidInt(e.characters);
+              const num = getValidInt(e.characters);
               if (num < 0) return;
               setCurrent(Math.min(num, max));
             },
@@ -537,9 +557,9 @@
     );
   }
 
-  // widget-src/footer.tsx
+  // widget-src/components/footer.tsx
   var { widget: widget5 } = figma;
-  var { AutoLayout: AutoLayout5, Text: Text5, Input: Input4, useSyncedState: useSyncedState4, useEffect } = widget5;
+  var { AutoLayout: AutoLayout5, Text: Text5, Input: Input4, useSyncedState: useSyncedState4 } = widget5;
   function getLevel(xp) {
     if (xp < 1e3) {
       return 1;
@@ -777,9 +797,107 @@
     );
   }
 
-  // widget-src/code.tsx
+  // widget-src/helpers/image_engine.ts
+  var base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  function getImageFromConnections(nodeId) {
+    return __async(this, null, function* () {
+      const node = yield figma.getNodeByIdAsync(nodeId);
+      if (!node || node.type !== "WIDGET") {
+        return void 0;
+      }
+      for (const connector of node.attachedConnectors) {
+        const endId = "endpointNodeId" in connector.connectorEnd ? connector.connectorEnd.endpointNodeId : void 0;
+        const start = "endpointNodeId" in connector.connectorStart ? connector.connectorStart.endpointNodeId : void 0;
+        const targetId = endId === nodeId ? start : endId;
+        if (!targetId) continue;
+        const endpointNode = yield figma.getNodeByIdAsync(targetId);
+        if (endpointNode && "fills" in endpointNode && Array.isArray(endpointNode.fills)) {
+          for (const fill of endpointNode.fills) {
+            if (fill.type === "IMAGE" && fill.imageHash) {
+              const image = figma.getImageByHash(fill.imageHash);
+              const bytes = yield image == null ? void 0 : image.getBytesAsync();
+              return bytes ? bytesToImage64(bytes) : void 0;
+            }
+          }
+        }
+      }
+    });
+  }
+  function bytesToImage64(bytes) {
+    let image = "data:image/png;base64,";
+    const data = [];
+    let i;
+    for (i = 0; i < bytes.length - 2; i += 3) {
+      const byte1 = bytes[i];
+      const byte2 = bytes[i + 1];
+      const byte3 = bytes[i + 2];
+      data.push(
+        base64Chars[byte1 >> 2],
+        base64Chars[(byte1 & 3) << 4 | byte2 >> 4],
+        base64Chars[(byte2 & 15) << 2 | byte3 >> 6],
+        base64Chars[byte3 & 63]
+      );
+    }
+    if (i < bytes.length) {
+      const byte1 = bytes[i];
+      data.push(base64Chars[byte1 >> 2]);
+      if (i + 1 < bytes.length) {
+        const byte2 = bytes[i + 1];
+        data.push(
+          base64Chars[(byte1 & 3) << 4 | byte2 >> 4],
+          base64Chars[(byte2 & 15) << 2],
+          "="
+        );
+      } else {
+        data.push(base64Chars[(byte1 & 3) << 4], "==");
+      }
+    }
+    image += data.join("");
+    return image;
+  }
+
+  // widget-src/components/player_image.tsx
   var { widget: widget6 } = figma;
-  var { AutoLayout: AutoLayout6, Image } = widget6;
+  var { Frame, Text: Text6, useSyncedState: useSyncedState5, useWidgetNodeId } = widget6;
+  function PlayerImage() {
+    const [image, setImage] = useSyncedState5("image", "");
+    const widgetId = useWidgetNodeId();
+    return /* @__PURE__ */ figma.widget.h(
+      Frame,
+      {
+        width: 500,
+        height: "fill-parent",
+        cornerRadius: 12,
+        fill: image ? {
+          src: image,
+          type: "image",
+          scaleMode: "fit"
+        } : "#fff",
+        stroke: image ? black : darkGray,
+        strokeWidth: 3,
+        onClick: () => __async(this, null, function* () {
+          const image2 = yield getImageFromConnections(widgetId);
+          if (image2) setImage(image2);
+        })
+      },
+      !image && /* @__PURE__ */ figma.widget.h(
+        Text6,
+        {
+          fontSize: 24,
+          fontFamily: basicFont,
+          fill: darkGray,
+          x: 25,
+          y: 25
+        },
+        "Click to add image"
+      )
+    );
+  }
+  var player_image_default = PlayerImage;
+
+  // widget-src/code.tsx
+  var { widget: widget7 } = figma;
+  var { AutoLayout: AutoLayout6 } = widget7;
   function Widget() {
     return /* @__PURE__ */ figma.widget.h(
       AutoLayout6,
@@ -797,13 +915,15 @@
         {
           horizontalAlignItems: "end",
           width: "fill-parent",
-          padding: { vertical: 0 }
+          padding: { vertical: 0 },
+          spacing: "auto"
         },
+        /* @__PURE__ */ figma.widget.h(player_image_default, null),
         /* @__PURE__ */ figma.widget.h(Stats, null)
       ),
       /* @__PURE__ */ figma.widget.h(Inventory, null),
       /* @__PURE__ */ figma.widget.h(Footer, null)
     );
   }
-  widget6.register(Widget);
+  widget7.register(Widget);
 })();

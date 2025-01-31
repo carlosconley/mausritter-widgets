@@ -1,4 +1,4 @@
-import { basicFont, black,  getValidInt, green, lightGray, maroon, titleFont } from "./globals";
+import { basicFont, black,  getValidInt, green, lightGray, maroon, titleFont } from "../helpers/globals";
 
 const { widget } = figma;
 const { useSyncedState, Input, AutoLayout, Text, Line, Ellipse } =

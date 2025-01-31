@@ -7,6 +7,8 @@ export const lightGray = "#e6e6e6"
 export const maroon = "#600010"
 export const green = "#105010"
 
+
+
 export function getValidInt(value: string) {
   const num = parseInt(value)
   return isNaN(num) ? -1 : num
