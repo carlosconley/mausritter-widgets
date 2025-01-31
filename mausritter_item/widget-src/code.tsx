@@ -11,6 +11,16 @@ const {
 import { getImageFromConnections } from "../../shared/src/images";
 import { UsageBars } from "./usage";
 
+const TOOLTIPS = {
+  SHRINK: "Shrink",
+  OPTIONS: "Options",
+  SET_DIMENSIONS: "Dimensions",
+  DECREMENT: "-",
+  INCREMENT: "+",
+  SELECT_COLOR: "Select Color",
+  SET_IMAGE: "Set Image",
+} as const;
+
 const options = [
   { option: "1x1", label: "1x1" },
   { option: "1x2", label: "1x2" },
@@ -43,6 +53,7 @@ function Widget() {
   const [minimized, setMinimized] = useSyncedState("minimized", false);
   const [total, setTotal] = useSyncedState("total", 3);
   const [color, setColor] = useSyncedState("color", "#FFFFF");
+  const [fullMenu, setFullMenu] = useSyncedState("fullMenu", true);
 
   const widgetId = useWidgetNodeId();
 
@@ -55,50 +66,74 @@ function Widget() {
       ? [
           {
             itemType: "toggle",
-            tooltip: "Minimize",
+            tooltip: TOOLTIPS.SHRINK,
             propertyName: "minimize",
             isToggled: minimized,
           },
         ]
-      : [
+      : fullMenu
+      ? [
+          {
+            itemType: "toggle",
+            tooltip: TOOLTIPS.OPTIONS,
+            propertyName: "full-menu",
+            isToggled: fullMenu,
+          },
           {
             itemType: "dropdown",
-            tooltip: "Set Dimensions",
+            tooltip: TOOLTIPS.SET_DIMENSIONS,
             propertyName: "dimensions",
             options,
             selectedOption: dimensions,
           },
           {
             itemType: "action",
-            tooltip: "-",
+            tooltip: TOOLTIPS.DECREMENT,
             propertyName: "decrement-total",
           },
           {
             itemType: "action",
-            tooltip: "+",
+            tooltip: TOOLTIPS.INCREMENT,
             propertyName: "increment-total",
           },
           {
             itemType: "color-selector",
-            tooltip: "Select Color",
+            tooltip: TOOLTIPS.SELECT_COLOR,
             propertyName: "color",
             options: colorOptions,
             selectedOption: color,
           },
           {
             itemType: "toggle",
-            tooltip: "Minimize",
+            tooltip: TOOLTIPS.SHRINK,
             propertyName: "minimize",
             isToggled: minimized,
           },
           {
             itemType: "action",
-            tooltip: "Set Image",
+            tooltip: TOOLTIPS.SET_IMAGE,
             propertyName: "set-image",
+          },
+        ]
+      : [
+          {
+            itemType: "toggle",
+            tooltip: TOOLTIPS.OPTIONS,
+            propertyName: "full-menu",
+            isToggled: fullMenu,
+          },
+          { itemType: "separator" },
+          {
+            itemType: "toggle",
+            tooltip: TOOLTIPS.SHRINK,
+            propertyName: "minimize",
+            isToggled: minimized,
           },
         ],
     async ({ propertyName, propertyValue }) => {
-      if (propertyName === "dimensions" && propertyValue) {
+      if (propertyName === "full-menu") {
+        setFullMenu(!fullMenu);
+      } else if (propertyName === "dimensions" && propertyValue) {
         setDimensions(propertyValue);
       } else if (propertyName === "minimize") {
         setMinimized(!minimized);
@@ -127,14 +162,16 @@ function Widget() {
       stroke={"#000"}
     >
       {image ? (
-        !minimized && <UsageBars
-          total={total}
-          background={color}
-        />
+        !minimized && (
+          <UsageBars
+            total={total}
+            background={color}
+          />
+        )
       ) : (
         <Text
           fontFamily="Barlow Condensed"
-          fontSize={ Math.min(renderWidth, renderHeight) / 10}
+          fontSize={Math.min(renderWidth, renderHeight) / 10}
           x={15}
           y={15}
           width={renderWidth - 30}
@@ -142,9 +179,9 @@ function Widget() {
           fill={"#808080"}
           horizontalAlignText="justified"
         >
-          To add an image to this item, use a connector (keyboard
-          shortcut "X") to link an image to this widget. Then, click this box to
-          add the image.
+          To add an image to this item, use a connector (keyboard shortcut "X")
+          to link an image to this widget. Then, click this box to add the
+          image.
         </Text>
       )}
     </Frame>
