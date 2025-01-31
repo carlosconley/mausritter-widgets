@@ -2,11 +2,28 @@ import { basicFont, black, darkGray } from "../helpers/globals";
 import { getImageFromConnections } from "../helpers/images";
 
 const { widget } = figma;
-const { Frame, Text, useSyncedState, useWidgetNodeId } = widget;
+const { Frame, Text, useSyncedState, useWidgetNodeId, usePropertyMenu } = widget;
 
 function PlayerImage() {
   const [image, setImage] = useSyncedState("image", "");
   const widgetId = useWidgetNodeId();
+
+  if (image) {
+    usePropertyMenu(
+      [
+        {
+          itemType: 'action',
+          tooltip: 'Reset Image',
+          propertyName: 'reset-image',
+        },
+      ],
+      ({ propertyName }) => {
+        if (propertyName === 'reset-image') {
+          setImage("");
+        }
+      }
+    );
+  }
   return (
     <Frame
       width={500}
