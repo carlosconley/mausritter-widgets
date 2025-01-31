@@ -127,7 +127,7 @@ function Widget() {
       stroke={"#000"}
     >
       {image ? (
-        <UsageBars
+        !minimized && <UsageBars
           total={total}
           background={color}
         />
