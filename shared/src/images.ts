@@ -1,7 +1,6 @@
 const base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/" as const;
 
-const resizeTo = 350
-async function getOptimizedImageFromNode(node: BaseNode) {
+async function getOptimizedImageFromNode(node: BaseNode, resizeTo = 400) {
   if ('resize' in node) {
     const copy = node.clone();
     const { width, height } = node;
@@ -15,7 +14,7 @@ async function getOptimizedImageFromNode(node: BaseNode) {
   return undefined;
 }
 
-export async function getImageFromConnections(nodeId: string) {
+export async function getImageFromConnections(nodeId: string, size?: number) {
   const node = await figma.getNodeByIdAsync(nodeId);
   if (!node || node.type !== "WIDGET") {
     return undefined;
@@ -37,7 +36,7 @@ export async function getImageFromConnections(nodeId: string) {
     if (
       endpointNode
     ) {
-      const bytes = await getOptimizedImageFromNode(endpointNode)
+      const bytes = await getOptimizedImageFromNode(endpointNode, size)
       return bytes ? bytesToImage64(bytes) : undefined;
     }
   }

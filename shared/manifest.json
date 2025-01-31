@@ -1,0 +1,19 @@
+{
+  "name": "Mausritter Character Sheet",
+  "id": "1466328938306038231",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "documentAccess": "dynamic-page",
+  "editorType": [
+    "figjam"
+  ],
+  "containsWidget": true,
+  "widgetApi": "1.0.0",
+  "networkAccess": {
+    "allowedDomains": [
+      "https://www.figma.com/board/"
+    ]
+  }
+}

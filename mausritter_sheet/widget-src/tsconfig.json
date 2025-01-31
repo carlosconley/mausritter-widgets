@@ -12,5 +12,10 @@
       "../node_modules/@types",
       "../node_modules/@figma"
     ]
-  }
+  },
+  "references": [
+    {
+      "path": "../../shared/src"
+    }
+  ]
 }

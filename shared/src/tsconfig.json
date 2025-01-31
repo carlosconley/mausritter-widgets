@@ -11,11 +11,7 @@
     "typeRoots": [
       "../node_modules/@types",
       "../node_modules/@figma"
-    ]
+    ],
+    "composite": true
   },
-  "references": [
-    {
-      "path": "../../shared/src",
-    }
-  ]
 }

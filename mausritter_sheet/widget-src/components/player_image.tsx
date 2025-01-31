@@ -1,5 +1,5 @@
 import { basicFont, black, darkGray } from "../helpers/globals";
-import { getImageFromConnections } from "../helpers/images";
+import { getImageFromConnections } from "../../../shared/src/images";
 
 const { widget } = figma;
 const { Frame, Text, useSyncedState, useWidgetNodeId, usePropertyMenu } = widget;
