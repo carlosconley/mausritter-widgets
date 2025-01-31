@@ -1,5 +1,12 @@
 import { Card } from "./card";
-import { black, lightGray, titleFont, basicFont, darkGray, getValidInt } from "../helpers/globals";
+import {
+  black,
+  lightGray,
+  titleFont,
+  basicFont,
+  darkGray,
+  getValidInt,
+} from "../helpers/globals";
 
 const { widget } = figma;
 const { AutoLayout, Text, Input, useSyncedState } = widget;
@@ -91,11 +98,34 @@ export function Pips() {
   );
 }
 
-export function InventoryDescription({ label, description }: { label: string, description: string }) {
+export function InventoryDescription({
+  label,
+  description,
+}: {
+  label: string;
+  description: string;
+}) {
   return (
-    <AutoLayout direction="horizontal" spacing={4} padding={{ vertical: 8 }}>
-      <Text fontFamily={basicFont} fontWeight="bold" fontSize={20} fill={darkGray}>{label}:</Text>
-      <Text fontFamily={basicFont} fontSize={20} fill={darkGray}>{description}</Text>
+    <AutoLayout
+      direction="horizontal"
+      spacing={4}
+      padding={{ vertical: 8 }}
+    >
+      <Text
+        fontFamily={basicFont}
+        fontWeight="bold"
+        fontSize={20}
+        fill={darkGray}
+      >
+        {label}:
+      </Text>
+      <Text
+        fontFamily={basicFont}
+        fontSize={20}
+        fill={darkGray}
+      >
+        {description}
+      </Text>
     </AutoLayout>
   );
 }
@@ -116,7 +146,10 @@ export function Items() {
       >
         <Card label="Main Paw" />
         <Card label="Off Paw" />
-        <InventoryDescription label="Carried" description="Ready to use." />
+        <InventoryDescription
+          label="Carried"
+          description="Ready to use."
+        />
       </AutoLayout>
       <AutoLayout
         direction="vertical"
@@ -126,7 +159,10 @@ export function Items() {
       >
         <Card label="Body" />
         <Card label="Body" />
-        <InventoryDescription label="Worn" description="Quick to Ready." />
+        <InventoryDescription
+          label="Worn"
+          description="Quick to Ready."
+        />
       </AutoLayout>
       <AutoLayout
         direction="vertical"
@@ -149,7 +185,10 @@ export function Items() {
             />
           ))}
         </AutoLayout>
-        <InventoryDescription label="Pack" description="Takes time to ready. During combat, requires an action to retrieve." />
+        <InventoryDescription
+          label="Pack"
+          description="Takes time to ready. During combat, requires an action to retrieve."
+        />
       </AutoLayout>
     </AutoLayout>
   );

@@ -12,7 +12,7 @@ function Widget() {
   return (
     <AutoLayout
       direction="vertical"
-      padding={35 }
+      padding={35}
       spacing={25}
       width="hug-contents"
       fill="#fff"
@@ -27,13 +27,13 @@ function Widget() {
         horizontalAlignItems="end"
         width="fill-parent"
         padding={{ vertical: 0 }}
-        spacing='auto'
+        spacing="auto"
       >
-        <PlayerImage/>
+        <PlayerImage />
         <Stats />
       </AutoLayout>
-      <Inventory/>
-      <Footer/>
+      <Inventory />
+      <Footer />
     </AutoLayout>
   );
 }

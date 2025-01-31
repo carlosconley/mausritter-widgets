@@ -35,7 +35,10 @@ function PackCard({ label }: { label: number }) {
       fill={lightGray}
       verticalAlignItems="center"
     >
-      <Text fontSize={72} {...sharedTextProps}>
+      <Text
+        fontSize={72}
+        {...sharedTextProps}
+      >
         {label}
       </Text>
     </AutoLayout>
@@ -44,8 +47,14 @@ function PackCard({ label }: { label: number }) {
 
 function BodyCard({ label }: { label: string }) {
   return (
-    <AutoLayout {...sharedCardProps} padding={{ vertical: 15 }}>
-      <Text fontSize={38} {...sharedTextProps}>
+    <AutoLayout
+      {...sharedCardProps}
+      padding={{ vertical: 15 }}
+    >
+      <Text
+        fontSize={38}
+        {...sharedTextProps}
+      >
         {label}
       </Text>
     </AutoLayout>

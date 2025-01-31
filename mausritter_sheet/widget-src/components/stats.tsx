@@ -1,8 +1,15 @@
-import { basicFont, black,  getValidInt, green, lightGray, maroon, titleFont } from "../helpers/globals";
+import {
+  basicFont,
+  black,
+  getValidInt,
+  green,
+  lightGray,
+  maroon,
+  titleFont,
+} from "../helpers/globals";
 
 const { widget } = figma;
-const { useSyncedState, Input, AutoLayout, Text, Line, Ellipse } =
-  widget;
+const { useSyncedState, Input, AutoLayout, Text, Line, Ellipse } = widget;
 
 export function StatRow({ title }: { title: string }) {
   const [max, setMax] = useSyncedState(`${title}-max`, 0);
@@ -65,7 +72,7 @@ export function StatRow({ title }: { title: string }) {
         />
         <Line
           stroke={black}
-strokeWidth={3}
+          strokeWidth={3}
           length={55}
           rotation={90}
         />
