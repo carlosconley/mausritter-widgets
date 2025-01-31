@@ -216,11 +216,29 @@
         fill: lightGray,
         verticalAlignItems: "center"
       }),
-      /* @__PURE__ */ figma.widget.h(Text2, __spreadValues({ fontSize: 72 }, sharedTextProps), label)
+      /* @__PURE__ */ figma.widget.h(
+        Text2,
+        __spreadValues({
+          fontSize: 72
+        }, sharedTextProps),
+        label
+      )
     );
   }
   function BodyCard({ label }) {
-    return /* @__PURE__ */ figma.widget.h(AutoLayout2, __spreadProps(__spreadValues({}, sharedCardProps), { padding: { vertical: 15 } }), /* @__PURE__ */ figma.widget.h(Text2, __spreadValues({ fontSize: 38 }, sharedTextProps), label));
+    return /* @__PURE__ */ figma.widget.h(
+      AutoLayout2,
+      __spreadProps(__spreadValues({}, sharedCardProps), {
+        padding: { vertical: 15 }
+      }),
+      /* @__PURE__ */ figma.widget.h(
+        Text2,
+        __spreadValues({
+          fontSize: 38
+        }, sharedTextProps),
+        label
+      )
+    );
   }
 
   // widget-src/components/inventory.tsx
@@ -323,8 +341,38 @@
       )
     );
   }
-  function InventoryDescription({ label, description }) {
-    return /* @__PURE__ */ figma.widget.h(AutoLayout3, { direction: "horizontal", spacing: 4, padding: { vertical: 8 } }, /* @__PURE__ */ figma.widget.h(Text3, { fontFamily: basicFont, fontWeight: "bold", fontSize: 20, fill: darkGray }, label, ":"), /* @__PURE__ */ figma.widget.h(Text3, { fontFamily: basicFont, fontSize: 20, fill: darkGray }, description));
+  function InventoryDescription({
+    label,
+    description
+  }) {
+    return /* @__PURE__ */ figma.widget.h(
+      AutoLayout3,
+      {
+        direction: "horizontal",
+        spacing: 4,
+        padding: { vertical: 8 }
+      },
+      /* @__PURE__ */ figma.widget.h(
+        Text3,
+        {
+          fontFamily: basicFont,
+          fontWeight: "bold",
+          fontSize: 20,
+          fill: darkGray
+        },
+        label,
+        ":"
+      ),
+      /* @__PURE__ */ figma.widget.h(
+        Text3,
+        {
+          fontFamily: basicFont,
+          fontSize: 20,
+          fill: darkGray
+        },
+        description
+      )
+    );
   }
   function Items() {
     return /* @__PURE__ */ figma.widget.h(
@@ -345,7 +393,13 @@
         },
         /* @__PURE__ */ figma.widget.h(Card, { label: "Main Paw" }),
         /* @__PURE__ */ figma.widget.h(Card, { label: "Off Paw" }),
-        /* @__PURE__ */ figma.widget.h(InventoryDescription, { label: "Carried", description: "Ready to use." })
+        /* @__PURE__ */ figma.widget.h(
+          InventoryDescription,
+          {
+            label: "Carried",
+            description: "Ready to use."
+          }
+        )
       ),
       /* @__PURE__ */ figma.widget.h(
         AutoLayout3,
@@ -357,7 +411,13 @@
         },
         /* @__PURE__ */ figma.widget.h(Card, { label: "Body" }),
         /* @__PURE__ */ figma.widget.h(Card, { label: "Body" }),
-        /* @__PURE__ */ figma.widget.h(InventoryDescription, { label: "Worn", description: "Quick to Ready." })
+        /* @__PURE__ */ figma.widget.h(
+          InventoryDescription,
+          {
+            label: "Worn",
+            description: "Quick to Ready."
+          }
+        )
       ),
       /* @__PURE__ */ figma.widget.h(
         AutoLayout3,
@@ -385,7 +445,13 @@
             }
           ))
         ),
-        /* @__PURE__ */ figma.widget.h(InventoryDescription, { label: "Pack", description: "Takes time to ready. During combat, requires an action to retrieve." })
+        /* @__PURE__ */ figma.widget.h(
+          InventoryDescription,
+          {
+            label: "Pack",
+            description: "Takes time to ready. During combat, requires an action to retrieve."
+          }
+        )
       )
     );
   }
@@ -797,7 +863,7 @@
     );
   }
 
-  // widget-src/helpers/image_engine.ts
+  // widget-src/helpers/images.ts
   var base64Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
   function getImageFromConnections(nodeId) {
     return __async(this, null, function* () {
@@ -868,11 +934,7 @@
         width: 500,
         height: "fill-parent",
         cornerRadius: 12,
-        fill: image ? {
-          src: image,
-          type: "image",
-          scaleMode: "fit"
-        } : "#fff",
+        fill: image ? { src: image, type: "image", scaleMode: "fit" } : "#fff",
         stroke: image ? black : darkGray,
         strokeWidth: 3,
         onClick: () => __async(this, null, function* () {
