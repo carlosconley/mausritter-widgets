@@ -5,6 +5,7 @@ const {
   Frame,
   useStickable,
   useWidgetNodeId,
+  Text,
 } = widget;
 
 import { getImageFromConnections } from "../../shared/src/images";
@@ -50,42 +51,52 @@ function Widget() {
   const [width, height] = dimensions.split("x").map(Number);
 
   usePropertyMenu(
-    [
-      {
-        itemType: "dropdown",
-        tooltip: "Set Dimensions",
-        propertyName: "dimensions",
-        options,
-        selectedOption: dimensions,
-      },
-      {
-        itemType: "action",
-        tooltip: "-",
-        propertyName: "decrement-total",
-      },
-      {
-        itemType: "action",
-        tooltip: "+",
-        propertyName: "increment-total",
-      },
-      {
-        itemType: "color-selector",
-        tooltip: "Select Color",
-        propertyName: "color",
-        options: colorOptions,
-        selectedOption: color,
-      }, {
-        itemType: "toggle",
-        tooltip: "Minimize",
-        propertyName: "minimize",
-        isToggled: minimized,
-      },
-      {
-        itemType: "action",
-        tooltip: "Set Image",
-        propertyName: "set-image",
-      },
-    ],
+    minimized
+      ? [
+          {
+            itemType: "toggle",
+            tooltip: "Minimize",
+            propertyName: "minimize",
+            isToggled: minimized,
+          },
+        ]
+      : [
+          {
+            itemType: "dropdown",
+            tooltip: "Set Dimensions",
+            propertyName: "dimensions",
+            options,
+            selectedOption: dimensions,
+          },
+          {
+            itemType: "action",
+            tooltip: "-",
+            propertyName: "decrement-total",
+          },
+          {
+            itemType: "action",
+            tooltip: "+",
+            propertyName: "increment-total",
+          },
+          {
+            itemType: "color-selector",
+            tooltip: "Select Color",
+            propertyName: "color",
+            options: colorOptions,
+            selectedOption: color,
+          },
+          {
+            itemType: "toggle",
+            tooltip: "Minimize",
+            propertyName: "minimize",
+            isToggled: minimized,
+          },
+          {
+            itemType: "action",
+            tooltip: "Set Image",
+            propertyName: "set-image",
+          },
+        ],
     async ({ propertyName, propertyValue }) => {
       if (propertyName === "dimensions" && propertyValue) {
         setDimensions(propertyValue);
@@ -104,15 +115,38 @@ function Widget() {
     }
   );
 
+  const renderWidth = (minimized ? 100 : 200) * width;
+  const renderHeight = (minimized ? 100 : 200) * height;
   return (
     <Frame
-      width={(minimized ? 100 : 200) * width}
-      height={(minimized ? 100 : 200) * height}
-      strokeWidth={3}
+      width={renderWidth}
+      height={renderHeight}
+      strokeWidth={2}
       cornerRadius={8}
       fill={image ? { src: image, type: "image", scaleMode: "fit" } : "#fff"}
+      stroke={"#000"}
     >
-      <UsageBars total={total} background={color} />
+      {image ? (
+        <UsageBars
+          total={total}
+          background={color}
+        />
+      ) : (
+        <Text
+          fontFamily="Barlow Condensed"
+          fontSize={ Math.min(renderWidth, renderHeight) / 10}
+          x={15}
+          y={15}
+          width={renderWidth - 30}
+          height={renderHeight}
+          fill={"#808080"}
+          horizontalAlignText="justified"
+        >
+          To add an image to this item, use a connector (keyboard
+          shortcut "X") to link an image to this widget. Then, click this box to
+          add the image.
+        </Text>
+      )}
     </Frame>
   );
 }

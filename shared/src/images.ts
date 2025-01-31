@@ -8,8 +8,6 @@ async function getOptimizedImageFromNode(node: BaseNode, resizeTo = 400) {
     const bytes = await copy.exportAsync({ format: 'PNG' });
     copy.remove();
     return bytes;
-  } else if ('exportAsync' in node) {
-    return await node.exportAsync({ format: 'PNG' });
   }
   return undefined;
 }
